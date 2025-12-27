@@ -18,11 +18,8 @@ export default function Navbar() {
   const [authForm, setAuthForm] = useState("login");
   const [toast, setToast] = useState({ message: "", type: "success" });
 
-
-
   const { loginUser, createUser, checkAuth, forgotPassword } = useData();
   const navigate = useNavigate();
-
   const accountRef = useRef(null);
 
   useEffect(() => {
@@ -31,20 +28,14 @@ export default function Navbar() {
         setAccountOptions(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   useEffect(() => {
-    if (loginOpen || registerOpen) {
-      setAccountOptions(false);
-    }
+    if (loginOpen || registerOpen) setAccountOptions(false);
   }, [loginOpen, registerOpen]);
 
-  // -------------------
-  // LOGIN
-  // -------------------
   const handleLogin = async ({ email, password }) => {
     setLoading(true);
     setLoginError(null);
@@ -52,10 +43,7 @@ export default function Navbar() {
       const res = await loginUser({ email, password });
       await checkAuth();
       setLoginOpen(false);
-
       if (res.role === "owner") navigate("/owner");
-      else if (res.role === "manager") navigate("/manager");
-      else if (res.role === "employee") navigate("/employee");
       else if (res.role === "customer") navigate("/customer");
       else navigate("/");
     } catch (err) {
@@ -65,9 +53,6 @@ export default function Navbar() {
     }
   };
 
-  // -------------------
-  // REGISTER
-  // -------------------
   const handleCustomerRegister = async (formData) => {
     try {
       await createUser(formData);
@@ -79,53 +64,35 @@ export default function Navbar() {
   };
 
   const handleForgotPasswordSubmit = async (email) => {
-  setLoading(true);
-  const res = await forgotPassword(email);
-  setLoading(false);
+    setLoading(true);
+    const res = await forgotPassword(email);
+    setLoading(false);
+    if (res.success) {
+      setToast({ message: `Reset link sent to ${email}`, type: "success" });
+      setTimeout(() => {
+        setLoginOpen(false);
+        setAuthForm("login");
+        setToast({ message: "", type: "success" });
+      }, 5000);
+    } else {
+      setToast({ message: res.message || "Something went wrong", type: "error" });
+      setTimeout(() => setToast({ message: "", type: "error" }), 5000);
+    }
+  };
 
-  if (res.success) {
-    setToast({
-      message: `Reset link sent to ${email}`,
-      type: "success",
-    });
-
-    setTimeout(() => {
-      setLoginOpen(false);
-      setAuthForm("login");
-      setToast({ message: "", type: "success" });
-    }, 5000);
-  } else {
-    setToast({
-      message: res.message || "Something went wrong",
-      type: "error",
-    });
-
-    setTimeout(() => {
-      setToast({ message: "", type: "error" });
-    }, 5000);
-  }
-};
-
-
-const handleForgotPassword = () => {
-  setAuthForm("forgot");
-};
-
-const handleBackToLogin = () => {
-  setAuthForm("login");
-};
-
+  const handleForgotPassword = () => setAuthForm("forgot");
+  const handleBackToLogin = () => setAuthForm("login");
 
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-50">
+    <nav className="bg-amber-50 shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-        <NavLink to="/" className="md:text-2xl text-l font-bold text-blue-700">
-          Beauty Parlour & Spa
+        <NavLink to="/" className="md:text-2xl text-l font-bold text-amber-800">
+          SizaCrafts
         </NavLink>
 
         {/* Hamburger Mobile */}
         <button
-          className="sm:hidden text-blue-700 text-2xl"
+          className="sm:hidden text-amber-800 text-2xl"
           onClick={() => setMenuOpen(!menuOpen)}
         >
           ☰
@@ -134,72 +101,32 @@ const handleBackToLogin = () => {
         <div
           className={`${
             menuOpen ? "block" : "hidden"
-          } absolute sm:static top-13 left-0 w-full sm:w-auto bg-white sm:flex sm:space-x-6 shadow sm:shadow-none`}
+          } absolute sm:static top-13 left-0 w-full sm:w-auto bg-amber-50 sm:flex sm:space-x-6 shadow sm:shadow-none`}
         >
-          {/* NAV LINKS */}
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-  `block px-2 py-2 rounded-md font-medium transition border-b-2 ${
-    isActive
-      ? "border-blue-500"
-      : "border-transparent hover:border-blue-500"
-  } text-gray-700 hover:text-blue-600`
-}
+          {["/", "/about", "/products", "/contact"].map((link, idx) => {
+            const label = link === "/" ? "Home" : link.slice(1).charAt(0).toUpperCase() + link.slice(2);
+            return (
+              <NavLink
+                key={idx}
+                to={link}
+                className={({ isActive }) =>
+                  `block px-3 py-2 rounded-md font-medium transition border-b-2 ${
+                    isActive
+                      ? "border-amber-700"
+                      : "border-transparent hover:border-amber-700"
+                  } text-gray-800 hover:text-amber-700`
+                }
+              >
+                {label}
+              </NavLink>
+            );
+          })}
 
-          >
-            Home
-          </NavLink>
-
-          <NavLink
-            to="/about"
-           className={({ isActive }) =>
-  `block px-2 py-2 rounded-md font-medium transition border-b-2 ${
-    isActive
-      ? "border-blue-500"
-      : "border-transparent hover:border-blue-500"
-  } text-gray-700 hover:text-blue-600`
-}
-
-          >
-            About
-          </NavLink>
-
-          <NavLink
-            to="/services"
-            className={({ isActive }) =>
-  `block px-2 py-2 rounded-md font-medium transition border-b-2 ${
-    isActive
-      ? "border-blue-500"
-      : "border-transparent hover:border-blue-500"
-  } text-gray-700 hover:text-blue-600`
-}
-
-          >
-            Services
-          </NavLink>
-
-          <NavLink
-            to="/contact"
-            className={({ isActive }) =>
-  `block px-2 py-2 rounded-md font-medium transition border-b-2 ${
-    isActive
-      ? "border-blue-500"
-      : "border-transparent hover:border-blue-500"
-  } text-gray-700 hover:text-blue-600`
-}
-
-          >
-            Contact
-          </NavLink>
-
-          {/* ----------------------------- */}
-          {/* ACCOUNT DROPDOWN (with outside close) */}
-          {/* ----------------------------- */}
+          {/* Account Dropdown */}
           <div className="relative" ref={accountRef}>
             <button
               onClick={() => setAccountOptions(!accountOptions)}
-              className="block bg-blue-600 text-white mx-4 my-2 px-4 py-2 rounded hover:bg-blue-700 transition"
+              className="block bg-amber-700 text-white mx-4 my-2 px-4 py-2 rounded hover:bg-amber-800 transition"
             >
               Account
             </button>
@@ -224,30 +151,25 @@ const handleBackToLogin = () => {
         </div>
       </div>
 
-      {/* LOGIN MODAL */}
-      
+      {/* Modals */}
       <Modal isOpen={loginOpen} onClose={() => setLoginOpen(false)}>
-  {authForm === "login" ? (
-    <LoginForm
-      onSubmit={handleLogin}
-      onCancel={() => setLoginOpen(false)}
-      loading={loading}
-      error={loginError}
-      onForgotPassword={handleForgotPassword}
-    />
-  ) : (
-    <ForgotPasswordForm
-      onSubmit={handleForgotPasswordSubmit}
-      onCancel={handleBackToLogin}
-      loading={loading}
-      message={null}
-      error={null}
-    />
-  )}
-</Modal>
+        {authForm === "login" ? (
+          <LoginForm
+            onSubmit={handleLogin}
+            onCancel={() => setLoginOpen(false)}
+            loading={loading}
+            error={loginError}
+            onForgotPassword={handleForgotPassword}
+          />
+        ) : (
+          <ForgotPasswordForm
+            onSubmit={handleForgotPasswordSubmit}
+            onCancel={handleBackToLogin}
+            loading={loading}
+          />
+        )}
+      </Modal>
 
-
-      {/* REGISTER MODAL */}
       <Modal isOpen={registerOpen} onClose={() => setRegisterOpen(false)}>
         <UserForm
           role="customer"
@@ -257,14 +179,13 @@ const handleBackToLogin = () => {
       </Modal>
 
       {toast.message && (
-  <ToastModal
-    message={toast.message}
-    type={toast.type}
-    duration={5000}
-    onClose={() => setToast({ message: "", type: toast.type })}
-  />
-)}
-
+        <ToastModal
+          message={toast.message}
+          type={toast.type}
+          duration={5000}
+          onClose={() => setToast({ message: "", type: toast.type })}
+        />
+      )}
     </nav>
   );
 }
