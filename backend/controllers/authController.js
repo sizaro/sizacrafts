@@ -12,7 +12,7 @@ import {
   getPasswordResetByToken,
   deletePasswordResetById,
   updateUserPasswordById
-} from "../models/authModels.js";
+} from "../models/authModel.js";
 
 // LOGIN
 export const login = (req, res, next) => {

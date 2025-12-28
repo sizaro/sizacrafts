@@ -16,18 +16,28 @@ const storage = multer.diskStorage({
     cb(null, IMAGES_DIR);
   },
   filename: (req, file, cb) => {
-  const ext = path.extname(file.originalname).toLowerCase();
+    const ext = path.extname(file.originalname).toLowerCase();
 
-  let prefix = "file";
+    // Dynamic prefix based on field name
+    let prefix = "file";
+    switch (file.fieldname) {
+      case "image_url":
+      case "category_image":
+        prefix = "category";
+        break;
+      case "product_image":
+        prefix = "product";
+        break;
+      case "variant_image":
+        prefix = "variant";
+        break;
+      default:
+        prefix = "file";
+    }
 
-  if (file.fieldname === "image_url") prefix = "user";
-  if (file.fieldname === "service_image") prefix = "service";
-  if (file.fieldname === "product_image") prefix = "product";
-
-  const filename = `${prefix}-${Date.now()}${ext}`;
-  cb(null, filename);
-},
-
+    const filename = `${prefix}-${Date.now()}${ext}`;
+    cb(null, filename);
+  },
 });
 
 // Filter allowed image types

@@ -13,17 +13,12 @@ import "./config/passport.js";
 
 dotenv.config();
 
-import servicesRoutes from "./routes/servicesRoutes.js";
-import serviceRoutet from "./routes/serviceRoutet.js";
-import expensesRoutes from "./routes/expensesRoutes.js";
-import advancesRoutes from "./routes/advancesRoutes.js";
-import clockingsRoutes from "./routes/clockingsRoutes.js";
-import sessionsRoutes from "./routes/sessionsRoutes.js";
+// --- Beads Routes ---
+import categoriesRoutes from "./routes/categoriesRoutes.js";
+import productsRoutes from "./routes/productsRoutes.js";
+import productVariantsRoutes from "./routes/productVariantsRoutes.js";
 import usersRoutes from "./routes/usersRoutes.js";
-import reportsRoutes from "./routes/reportsRoutes.js";
-import feesRoutes from "./routes/feesRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
-import sectionsRoutes from "./routes/sectionsRoutes.js"
 
 const app = express();
 
@@ -33,8 +28,8 @@ const __dirname = path.dirname(__filename);
 
 // ✅ CORS setup
 const allowedOrigins = [
-  "https://salonmanagementsystemv2.vercel.app",
-  "http://localhost:5173"
+  "https://your-beads-app.vercel.app",
+  "http://localhost:5173",
 ];
 
 app.use((req, res, next) => {
@@ -51,27 +46,27 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error("Not allowed by CORS"));
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-}));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 app.use(express.json());
 app.use(cookieParser());
 
 // --- Sessions ---
 const PgSessionStore = pgSession(session);
-
 const isProd = process.env.NODE_ENV === "production";
 
 const sessionStore = new PgSessionStore({
-  // PRODUCTION → use DATABASE_URL + SSL
   ...(isProd
     ? {
         conObject: {
@@ -80,19 +75,17 @@ const sessionStore = new PgSessionStore({
         },
       }
     : {
-        // DEVELOPMENT → localhost
         conObject: {
           host: "localhost",
-          port: 5433,
+          port: 5432,
           user: "postgres",
           password: "postgres",
-          database: "salonmanagementsystemv2_db",
+          database: "beads_db",
           ssl: false,
         },
       }),
   createTableIfMissing: true,
 });
-
 
 const sessionConfig = {
   store: sessionStore,
@@ -111,7 +104,6 @@ const sessionConfig = {
 app.set("trust proxy", 1);
 app.use(session(sessionConfig));
 
-
 // --- Passport ---
 app.use(passport.initialize());
 app.use(passport.session());
@@ -119,29 +111,18 @@ app.use(passport.session());
 // --- Static files ---
 app.use("/uploads/images", express.static(path.join(__dirname, "/uploads/images")));
 
-
-// --- Routes ---
-app.use("/api/services", servicesRoutes);
-app.use("/api/servicet", serviceRoutet);
-app.use("/api/expenses", expensesRoutes);
-app.use("/api/advances", advancesRoutes);
-app.use("/api/clockings", clockingsRoutes);
-app.use("/api/sessions", sessionsRoutes);
+// --- Beads API Routes ---
+app.use("/api/categories", categoriesRoutes);
+app.use("/api/products", productsRoutes);
+app.use("/api/product-variants", productVariantsRoutes);
 app.use("/api/users", usersRoutes);
-app.use("/api/reports", reportsRoutes);
-app.use("/api/fees", feesRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/sections", sectionsRoutes)
-
 
 
 // ----------- SOCKET.IO SETUP -----------
 const PORT = process.env.PORT || 5500;
-
-// create http server from express app
 const server = http.createServer(app);
 
-// configure socket.io
 const io = new IOServer(server, {
   cors: {
     origin: process.env.CLIENT_ORIGIN
@@ -150,18 +131,14 @@ const io = new IOServer(server, {
     methods: ["GET", "POST"],
     credentials: true,
   },
-  // path: "/socket.io", // default, change only if needed
 });
 
-// attach io to app for controllers to access
 app.set("io", io);
-// optional easy global: global.io (use with caution)
 global.io = io;
 
 io.on("connection", (socket) => {
   console.log("🟢 Socket connected:", socket.id);
 
-  // you can handle custom events from clients here, e.g. join rooms
   socket.on("join_room", (room) => {
     console.log(`Socket ${socket.id} joining room ${room}`);
     socket.join(room);
@@ -173,6 +150,4 @@ io.on("connection", (socket) => {
 });
 
 // start server
-server.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
-
-
+server.listen(PORT, () => console.log(`✅ Beads server running on port ${PORT}`));
