@@ -6,7 +6,7 @@ const DataContext = createContext();
 
 export const DataProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
@@ -14,6 +14,9 @@ export const DataProvider = ({ children }) => {
 
   const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_URL || "/api";
+  useEffect(() => {
+    checkAuth();
+  }, []);
 
   // ------------------------
   // AUTH
@@ -22,6 +25,7 @@ export const DataProvider = ({ children }) => {
     try {
       const res = await axios.post(`${API_URL}/auth/login`, credentials, { withCredentials: true });
       const { user } = res.data;
+      console.log("logged in user in context", user)
       setUser(user);
       return user;
     } catch (err) {
@@ -32,23 +36,25 @@ export const DataProvider = ({ children }) => {
 
   const checkAuth = async () => {
     try {
-      const res = await axios.get(`${API_URL}/auth/check`, { withCredentials: true });
-      setUser(res.data.user || null);
-      if (!res.data.user) navigate("/login"); // redirect if not logged in
-      return res.data.user;
+      const res = await axios.get(`${API_URL}/auth/check`, {
+        withCredentials: true,
+      });
+      console.log("user in auth check in context", res.data.user)
+      setUser(res.data.user);
     } catch (err) {
       setUser(null);
-      console.error("Auth check failed:", err);
-      navigate("/");
-      throw err;
     }
+    finally {
+  setLoading(false);
+}
+
   };
 
   const logoutUser = async () => {
     try {
       await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
       setUser(null);
-      navigate("/login");
+      navigate("/");
     } catch (err) {
       console.error("Error logging out:", err);
     }
@@ -246,8 +252,8 @@ export const DataProvider = ({ children }) => {
   // ------------------------
   // INITIAL LOAD
   // ------------------------
+
   useEffect(() => {
-    checkAuth();
     fetchCategories();
   }, []);
 

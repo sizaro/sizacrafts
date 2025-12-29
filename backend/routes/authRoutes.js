@@ -8,15 +8,16 @@ const router = express.Router();
 
 // Login with Passport local strategy
 router.post("/login", passport.authenticate("local"), (req, res) => {
-  const { id, first_name, last_name, email, role } = req.user;
-  res.json({ user: { id, first_name, last_name, email, role } });
+  console.log("logged in user in backend")
+  const { id, username, email, role } = req.user;
+  res.json({ user: { id, username, email, role } });
 });
 
 // Check if user is authenticated
 router.get("/check", (req, res) => {
   if (req.isAuthenticated()) {
-    const { id, first_name, last_name, email, role } = req.user;
-    res.json({ user: { id, first_name, last_name, email, role } });
+    const { id, username, email, role } = req.user;
+    res.json({ user: { id, username, email, role } });
   } else {
     res.status(401).json({ message: "Not authenticated" });
   }

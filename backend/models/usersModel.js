@@ -8,19 +8,18 @@ export const fetchAllUsers = async (salon_id) => {
     SELECT u.*,
            (u.created_at AT TIME ZONE 'Africa/Kampala') AS user_time
     FROM users u
-    WHERE u.salon_id = $1
     ORDER BY u.id ASC;
   `;
-  const result = await db.query(query, [salon_id]);
+  const result = await db.query(query);
   return result.rows;
 };
 
 /**
  * Fetch single user by ID for a given salon
  */
-export const fetchUserById = async (id, salon_id) => {
-  const query = `SELECT * FROM users WHERE id = $1 AND salon_id = $2;`;
-  const result = await db.query(query, [id, salon_id]);
+export const fetchUserById = async (id) => {
+  const query = `SELECT * FROM users WHERE id = $1;`;
+  const result = await db.query(query, [id]);
   return result.rows[0];
 };
 
@@ -28,7 +27,6 @@ export const fetchUserById = async (id, salon_id) => {
  * Save new user
  */
 export const saveUser = async ({
-  salon_id,
   first_name,
   middle_name,
   last_name,
@@ -49,10 +47,10 @@ export const saveUser = async ({
       (
         first_name, middle_name, last_name, email, password, 
         birthdate, contact, next_of_kin, next_of_kin_contact, 
-        role, specialty, status, bio, image_url, salon_id, created_at
+        role, specialty, status, bio, image_url,created_at
       ) 
     VALUES 
-      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,NOW())
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,NOW())
     RETURNING *;
   `;
 
@@ -71,7 +69,6 @@ export const saveUser = async ({
     status || 'active',
     bio || null,
     image_url || null,
-    salon_id
   ];
 
   const result = await db.query(query, values);
@@ -84,7 +81,6 @@ export const saveUser = async ({
 export const UpdateUserById = async (data) => {
   let {
     id,
-    salon_id,
     first_name,
     middle_name,
     last_name,
@@ -147,7 +143,7 @@ export const UpdateUserById = async (data) => {
   const query = `
     UPDATE users
     SET ${fields.join(", ")}
-    WHERE id = $${values.length - 1} AND salon_id = $${values.length}
+    WHERE id = $${values.length - 1}
     RETURNING *;
   `;
 
@@ -159,7 +155,7 @@ export const UpdateUserById = async (data) => {
  * Delete user by ID and salon
  */
 export const DeleteUserById = async (id, salon_id) => {
-  const query = `DELETE FROM users WHERE id = $1 AND salon_id = $2 RETURNING *;`;
+  const query = `DELETE FROM users WHERE id = $1 RETURNING *;`;
   const result = await db.query(query, [id, salon_id]);
   return result.rows[0];
 };
@@ -167,22 +163,22 @@ export const DeleteUserById = async (id, salon_id) => {
 /**
  * Find user by email (for a specific salon)
  */
-export const findUserByEmail = async (email, salon_id) => {
-  const query = "SELECT * FROM users WHERE email = $1 AND salon_id = $2";
-  const result = await db.query(query, [email, salon_id]);
+export const findUserByEmail = async (email) => {
+  const query = "SELECT * FROM users WHERE email = $1;";
+  const result = await db.query(query, [email]);
   return result.rows[0];
 };
 
 /**
  * Find user by ID (limited fields) for a specific salon
  */
-export const findUserById = async (id, salon_id) => {
+export const findUserById = async (id) => {
   const query = `
-    SELECT id, first_name, last_name, email, role, salon_id 
+    SELECT id, username, email, role
     FROM users 
-    WHERE id = $1 AND salon_id = $2
+    WHERE id = $1
   `;
-  const result = await db.query(query, [id, salon_id]);
+  const result = await db.query(query, [id]);
   return result.rows[0];
 };
 
