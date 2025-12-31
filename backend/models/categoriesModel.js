@@ -30,18 +30,18 @@ export const fetchCategoryByIdModel = async (id) => {
 };
 
 // CREATE CATEGORY
-export const createCategoryModel = async ({ name, description, image_url }) => {
+export const createCategoryModel = async ({ name, description, category_image }) => {
   const { rows } = await db.query(
     `INSERT INTO categories (name, description, image_url)
      VALUES ($1, $2, $3)
      RETURNING *`,
-    [name, description, image_url]
+    [name, description, category_image]
   );
   return rows[0];
 };
 
 // UPDATE CATEGORY
-export const updateCategoryModel = async (id, { name, description, image_url }) => {
+export const updateCategoryModel = async (id, { name, description, category_image }) => {
   const { rows } = await db.query(
     `UPDATE categories
      SET name = $1,
@@ -49,7 +49,7 @@ export const updateCategoryModel = async (id, { name, description, image_url }) 
          image_url = $3
      WHERE id = $4
      RETURNING *`,
-    [name, description, image_url, id]
+    [name, description, category_image, id]
   );
   return rows[0];
 };

@@ -78,7 +78,7 @@ export default function AdminSidebar() {
               </Link>
             </li>
 
-            <li>
+            {/* <li>
               <Link to="/admin/orders" className={linkClass("/admin/orders")}>
                 Orders
               </Link>
@@ -94,7 +94,7 @@ export default function AdminSidebar() {
               <Link to="/admin/reports" className={linkClass("/admin/reports")}>
                 Reports
               </Link>
-            </li>
+            </li> */}
 
             <li className="mt-10">
               <SidebarFooter />

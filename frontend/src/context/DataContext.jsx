@@ -8,57 +8,64 @@ export const DataProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const [status, setStatus] = useState("loading");
+
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [productVariants, setProductVariants] = useState([]);
 
   const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_URL || "/api";
-  useEffect(() => {
-    checkAuth();
-  }, []);
 
   // ------------------------
   // AUTH
   // ------------------------
-  const loginUser = async (credentials) => {
-    try {
-      const res = await axios.post(`${API_URL}/auth/login`, credentials, { withCredentials: true });
-      const { user } = res.data;
-      console.log("logged in user in context", user)
-      setUser(user);
-      return user;
-    } catch (err) {
-      console.error("Error logging in:", err);
-      throw err;
-    }
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+    const loginUser = async (credentials) => {
+    const res = await axios.post(
+      `${API_URL}/auth/login`,
+      credentials,
+      { withCredentials: true }
+    );
+
+    setUser(res.data.user);
+    setStatus("authenticated");
+
+    return res.data.user;
   };
 
-  const checkAuth = async () => {
+   const checkAuth = async () => {
     try {
       const res = await axios.get(`${API_URL}/auth/check`, {
         withCredentials: true,
       });
-      console.log("user in auth check in context", res.data.user)
-      setUser(res.data.user);
+
+      setUser(res.data);
+      setStatus("authenticated");
     } catch (err) {
       setUser(null);
+      setStatus("guest");
     }
-    finally {
-  setLoading(false);
-}
-
   };
 
   const logoutUser = async () => {
-    try {
-      await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
-      setUser(null);
-      navigate("/");
-    } catch (err) {
-      console.error("Error logging out:", err);
-    }
+    await axios.post(
+      `${API_URL}/auth/logout`,
+      {},
+      { withCredentials: true }
+    );
+
+    setUser(null);
+    setStatus("guest");
   };
+
+
+  console.log( "authenticated in data context",user, status);
+
 
   // ------------------------
   // CATEGORIES CRUD
@@ -249,6 +256,18 @@ export const DataProvider = ({ children }) => {
     }
   };
 
+  const fetchAllVariants = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/product-variants`, { withCredentials: true });
+    setProductVariants(res.data.data);
+    return res.data;
+  } catch (err) {
+    console.error("Error fetching all product variants:", err);
+    throw err;
+  }
+};
+
+
   // ------------------------
   // INITIAL LOAD
   // ------------------------
@@ -261,6 +280,7 @@ export const DataProvider = ({ children }) => {
     <DataContext.Provider
       value={{
         user,
+        status,
         loading,
         loginUser,
         checkAuth,
@@ -284,6 +304,7 @@ export const DataProvider = ({ children }) => {
         createVariant,
         updateVariant,
         deleteVariant,
+        fetchAllVariants
       }}
     >
       {children}

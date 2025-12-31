@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useData } from "../../context/DataContext";
 import Modal from "../../components/Modal.jsx";
 import Button from "../../components/Button.jsx";
@@ -9,10 +9,15 @@ import ProductForm from "../../components/ProductForm.jsx";
 import ProductVariantForm from "../../components/ProductVariantsForm.jsx";
 
 export default function AdminDashboard() {
-  const { categories, products, createCategory, createProduct, createVariant } = useData();
+  const { categories, products, createCategory, createProduct, createVariant, fetchCategories, fetchProducts } = useData();
+
   const [modalType, setModalType] = useState(null);
 
   const closeModal = () => setModalType(null);
+  useEffect(() => {
+      fetchProducts();
+      fetchCategories();
+    }, []);
 
   return (
     <div className="space-y-6">

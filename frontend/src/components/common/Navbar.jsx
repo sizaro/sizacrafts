@@ -139,12 +139,12 @@ export default function Navbar() {
                 >
                   Login
                 </button>
-                <button
+                {/* <button
                   className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                   onClick={() => setRegisterOpen(true)}
                 >
                   Create Account
-                </button>
+                </button> */}
               </div>
             )}
           </div>

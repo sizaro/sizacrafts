@@ -38,13 +38,14 @@ export const getProductVariantById = async (req, res) => {
 // CREATE product variant
 export const createProductVariant = async (req, res) => {
   try {
-    const { name, product_id, price } = req.body;
+    const { name, product_id, price, description } = req.body;
 
     const variant_image = req.file
       ? `/uploads/images/${req.file.filename}`
       : null;
 
-    const data = { name, product_id, price, variant_image };
+    const data = { name, product_id, price, description, variant_image };
+    console.log("data in controller for product variant", data)
 
     const newVariant = await createProductVariantModel(data);
     res.status(201).json({ success: true, data: newVariant });
@@ -58,7 +59,7 @@ export const createProductVariant = async (req, res) => {
 export const updateProductVariant = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, product_id, price } = req.body;
+    const { name, product_id, price, description } = req.body;
 
     if (!id) {
       return res.status(400).json({ success: false, message: "Missing variant ID" });
@@ -69,17 +70,17 @@ export const updateProductVariant = async (req, res) => {
       return res.status(404).json({ success: false, message: "Product variant not found" });
     }
 
-    let variant_image = existingVariant.variant_image;
+    let variant_image = existingVariant.image_url;
 
     if (req.file && req.file.filename) {
-      if (existingVariant.variant_image) {
-        const oldPath = path.join(process.cwd(), existingVariant.variant_image);
+      if (existingVariant.image_url) {
+        const oldPath = path.join(process.cwd(), existingVariant.image_url);
         if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
       }
       variant_image = `/uploads/images/${req.file.filename}`;
     }
 
-    const data = { name, product_id, price, variant_image };
+    const data = { name, product_id, price, description, variant_image };
     const updatedVariant = await updateProductVariantModel(id, data);
 
     res.json({ success: true, data: updatedVariant });

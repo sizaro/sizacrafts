@@ -44,6 +44,7 @@ export const createCategory = async (req, res) => {
       : null;
 
     const data = { name, description, category_image };
+    console.log("data in the controller for category", data)
 
     const newCategory = await createCategoryModel(data);
     res.status(201).json({ success: true, data: newCategory });
@@ -68,17 +69,18 @@ export const updateCategory = async (req, res) => {
       return res.status(404).json({ success: false, message: "Category not found" });
     }
 
-    let category_image = existingCategory.category_image;
+    let category_image = existingCategory.image_url;
 
     if (req.file && req.file.filename) {
-      if (existingCategory.category_image) {
-        const oldPath = path.join(process.cwd(), existingCategory.category_image);
+      if (existingCategory.image_url) {
+        const oldPath = path.join(process.cwd(), existingCategory.image_url);
         if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
       }
       category_image = `/uploads/images/${req.file.filename}`;
     }
 
     const data = { name, description, category_image };
+    console.log("data in the controller for updating category", data)
     const updatedCategory = await updateCategoryModel(id, data);
 
     res.json({ success: true, data: updatedCategory });

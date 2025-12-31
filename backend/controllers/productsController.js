@@ -38,13 +38,14 @@ export const getProductById = async (req, res) => {
 // CREATE product
 export const createProduct = async (req, res) => {
   try {
-    const { name, description, category_id, price } = req.body;
+    const { name, description, category_id, price_range } = req.body;
 
     const product_image = req.file
       ? `/uploads/images/${req.file.filename}`
       : null;
 
-    const data = { name, description, category_id, price, product_image };
+    const data = { name, description, category_id, price_range, product_image };
+    console.log("data for product in controller", data)
 
     const newProduct = await createProductModel(data);
     res.status(201).json({ success: true, data: newProduct });
@@ -58,7 +59,7 @@ export const createProduct = async (req, res) => {
 export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, category_id, price } = req.body;
+    const { name, description, category_id, price_range } = req.body;
 
     if (!id) {
       return res.status(400).json({ success: false, message: "Missing product ID" });
@@ -69,17 +70,18 @@ export const updateProduct = async (req, res) => {
       return res.status(404).json({ success: false, message: "Product not found" });
     }
 
-    let product_image = existingProduct.product_image;
+    let product_image = existingProduct.image_url;
 
     if (req.file && req.file.filename) {
-      if (existingProduct.product_image) {
-        const oldPath = path.join(process.cwd(), existingProduct.product_image);
+      if (existingProduct.image_url) {
+        const oldPath = path.join(process.cwd(), existingProduct.image_url);
         if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
       }
       product_image = `/uploads/images/${req.file.filename}`;
     }
 
-    const data = { name, description, category_id, price, product_image };
+    const data = { name, description, category_id, price_range, product_image };
+    console.log("data in the controller for product update", data)
     const updatedProduct = await updateProductModel(id, data);
 
     res.json({ success: true, data: updatedProduct });

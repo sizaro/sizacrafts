@@ -17,7 +17,7 @@ router.post("/login", passport.authenticate("local"), (req, res) => {
 router.get("/check", (req, res) => {
   if (req.isAuthenticated()) {
     const { id, username, email, role } = req.user;
-    res.json({ user: { id, username, email, role } });
+    res.json({ id, username, email, role });
   } else {
     res.status(401).json({ message: "Not authenticated" });
   }
