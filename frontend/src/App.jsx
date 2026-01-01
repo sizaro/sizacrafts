@@ -7,7 +7,7 @@ import About from "./pages/landing/About.jsx";
 import ProductsPage from "./pages/landing/ProductsPage.jsx";
 import CategoryPage from "./pages/products/CategoryPage.jsx";
 import ProductVariantsPage from "./pages/products/ProductVariantsPage.jsx";
-import ProductsAll from "./pages/Products/ProductsAll";
+import ProductsAll from "./pages/products/ProductsAll.jsx";
 import Contact from "./pages/landing/Contact.jsx";
 import ResetPassword from "./pages/landing/ResetPassword.jsx";
 
