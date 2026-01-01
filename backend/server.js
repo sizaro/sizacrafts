@@ -28,7 +28,7 @@ const __dirname = path.dirname(__filename);
 
 // ✅ CORS setup
 const allowedOrigins = [
-  "https://sizacrafts.vercel.app/",
+  "https://sizacrafts.vercel.app",
   "http://localhost:5173",
 ];
 
