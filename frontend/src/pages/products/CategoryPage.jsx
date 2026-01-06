@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useData } from "../../context/DataContext.jsx";
 import Navbar from "../../components/common/Navbar.jsx";
@@ -9,8 +9,13 @@ export default function CategoryPage() {
   const { fetchProductsByCategory, products = [] } = useData();
   const navigate = useNavigate();
 
+  const staticBaseUrl =
+    import.meta.env.MODE === "development"
+      ? "http://localhost:5500"
+      : "https://salonmanagementsystemv2.onrender.com";
+
   useEffect(() => {
-    fetchProductsByCategory(id)
+    fetchProductsByCategory(id);
   }, []);
 
   return (
@@ -23,7 +28,9 @@ export default function CategoryPage() {
         >
           ← Back to Categories
         </button>
+
         <h1 className="text-3xl font-bold mb-8">Products</h1>
+
         <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {products.map((product) => (
             <div
@@ -31,12 +38,20 @@ export default function CategoryPage() {
               className="bg-white rounded-lg shadow-md p-4 flex flex-col"
             >
               <img
-                src={product.image_url}
+                src={
+                  product.image_url
+                    ? `${staticBaseUrl}${product.image_url}`
+                    : "/placeholder-image.png"
+                }
                 alt={product.name}
                 className="h-48 object-cover rounded"
               />
+
               <h2 className="text-lg font-semibold mt-2">{product.name}</h2>
-              <p className="text-gray-800 font-bold mt-1">UGX {product.price}</p>
+              <p className="text-gray-800 font-bold mt-1">
+                UGX {product.price_range}
+              </p>
+
               <button
                 onClick={() => navigate(`/products/product/${product.id}`)}
                 className="mt-auto bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"

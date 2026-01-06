@@ -13,15 +13,15 @@ import ResetPassword from "./pages/landing/ResetPassword.jsx";
 
 // Admin
 import AdminLayout from "./components/layout/AdminLayout.jsx";
-import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
-import Products from "./pages/admin/Products.jsx";
-import Categories from "./pages/admin/Categories.jsx";
-import ProductVariants from "./pages/admin/ProductVariants.jsx";
+import { useData } from "./context/DataContext";
 
 function App() {
+
+  const { status } = useData();
+
   return (
     <Routes>
-      {/* Public */}
+      {/* ---------- Public Routes ---------- */}
       <Route path="/" element={<Home />} />
       <Route path="/about" element={<About />} />
       <Route path="/products" element={<ProductsPage />} />
@@ -31,16 +31,15 @@ function App() {
       <Route path="/contact" element={<Contact />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
 
-      {/* Protected Admin */}
-      <Route path="/admin" element={<ProtectedRoute role="admin" />}>
-        <Route element={<AdminLayout />}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="products" element={<Products />} />
-          <Route path="categories" element={<Categories />} />
-          <Route path="variants" element={<ProductVariants />} />
-        </Route>
-      </Route>
+      {/* ---------- Admin Routes ---------- */}
+      <Route
+        path="/admin/*"
+        element={
+          <ProtectedRoute role="admin">
+            <AdminLayout />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }

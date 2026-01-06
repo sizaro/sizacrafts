@@ -8,59 +8,100 @@ export const DataProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const [status, setStatus] = useState("loading");
+  const [status, setStatus] = useState(true);
 
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [productVariants, setProductVariants] = useState([]);
 
   const navigate = useNavigate();
-  const API_URL = import.meta.env.VITE_API_URL || "/api";
+  // src/context/DataContext.jsx
+const API_URL = import.meta.env.VITE_API_URL ?? "/api";
+
 
   // ------------------------
   // AUTH
   // ------------------------
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
 
-    const loginUser = async (credentials) => {
-    const res = await axios.post(
-      `${API_URL}/auth/login`,
-      credentials,
-      { withCredentials: true }
-    );
+  
 
-    setUser(res.data.user);
-    setStatus("authenticated");
 
-    return res.data.user;
-  };
+// const loginUser = async (credentials) => {
+//     console.log("🔹 Sending login request with:", { credentials });
+//     try {
+//       const res = await axios.post(`${API_URL}/auth/login`, credentials, {
+//         withCredentials: true,
+//       });
+//       const { user } = res.data;
+//       console.log("user in logged in context", user)
+//       setUser(user);
 
-   const checkAuth = async () => {
+//       if (!user) {
+//         throw new Error("Invalid login response — user missing");
+//       }
+
+//       return user;
+//     } catch (err) {
+//       console.error("Error during loginUser:", err);
+//       throw err;
+//     }
+//   };
+
+
+
+const loginUser = async (credentials) => {
+    console.log("🔹 Sending login request with:", { credentials });
     try {
-      const res = await axios.get(`${API_URL}/auth/check`, {
+      const res = await axios.post(`${API_URL}/auth/login`, credentials, {
         withCredentials: true,
       });
-
-      setUser(res.data);
-      setStatus("authenticated");
+      const { user } = res.data;
+      console.log("user in logged in context", user)
+      setUser(user);
+      if (user?.role === "admin"){
+      navigate("/admin/dashboard")
+    }
+      return user;
     } catch (err) {
-      setUser(null);
-      setStatus("guest");
+      console.error("Error during loginUser:", err)
+      throw err;
     }
   };
 
-  const logoutUser = async () => {
-    await axios.post(
-      `${API_URL}/auth/logout`,
-      {},
-      { withCredentials: true }
-    );
+  const checkAuth = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/auth/check`, {
+      withCredentials: true,
+    });
+    const user = res.data
+    setUser(res.data);
 
-    setUser(null);
-    setStatus("guest");
+    console.log("authed user in context", user)
+
+    if (user?.role === "admin"){
+      navigate("/admin/dashboard")
+      
+    };
+
+
+  } catch(err) {
+  console.log("Auth check failed:", err.message);
+
+  } finally {
+    setStatus(false);
+  }
+};
+
+  const logoutUser = async () => {
+    try {
+      await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
+    } catch (err) {
+      console.error("Error during logout:", err);
+    } finally {
+      setUser(null);
+      navigate("/")
+    }
   };
 
 
@@ -272,15 +313,10 @@ export const DataProvider = ({ children }) => {
   // INITIAL LOAD
   // ------------------------
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
   return (
     <DataContext.Provider
       value={{
         user,
-        status,
         loading,
         loginUser,
         checkAuth,

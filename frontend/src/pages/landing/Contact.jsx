@@ -2,9 +2,18 @@
 import React from "react";
 import Navbar from "../../components/common/Navbar";
 import Footer from "../../components/common/Footer";
+import MetaTags from "../../components/common/MetaTags"
 
 export default function Contact() {
   return (
+    <>
+       <MetaTags
+              title="Contact"
+              description="Crafted in Africa with passion. Handmade bead jewelry and décor."
+              url="https://sizacrafts.com"
+            />
+
+    
     <div className="bg-gray-50 min-h-screen flex flex-col">
       <Navbar />
 
@@ -19,11 +28,6 @@ export default function Contact() {
           <p className="text-gray-600 mb-6">
             Our team responds promptly to all messages. Reach out through WhatsApp, Email, Phone, or social media below.
           </p>
-          <img
-            src="/images/contact_hero.jpg"
-            alt="Contact Us"
-            className="w-full md:h-96 h-64 object-cover rounded-xl shadow-md mx-auto"
-          />
         </section>
 
         {/* How to Contact */}
@@ -32,6 +36,17 @@ export default function Contact() {
           <p className="text-gray-700 max-w-3xl mx-auto mb-6">
             We want to make it easy for you to connect with us. Whether you have a question about our products, need advice, or want to place an order, our team is ready to assist.
           </p>
+
+          <section className="text-center">
+          <img
+            src="/images/contact us.jpg"
+            alt="Contact Illustration"
+            className="w-full md:h-96 h-64 object-cover rounded-xl shadow-md mx-auto mb-6"
+          />
+          <p className="text-gray-700 text-lg max-w-3xl mx-auto">
+            Ready to reach out? Click any of the contact options below and connect with us immediately. We look forward to assisting you!
+          </p>
+        </section>
           <div className="flex flex-col sm:flex-row justify-center gap-6">
             <a
               href="https://wa.me/256700000000"
@@ -85,21 +100,10 @@ export default function Contact() {
           </p>
         </section>
 
-        {/* Contact Image / CTA */}
-        <section className="text-center">
-          <img
-            src="/images/contact_us_large.jpg"
-            alt="Contact Illustration"
-            className="w-full md:h-96 h-64 object-cover rounded-xl shadow-md mx-auto mb-6"
-          />
-          <p className="text-gray-700 text-lg max-w-3xl mx-auto">
-            Ready to reach out? Click any of the contact options above and connect with us immediately. We look forward to assisting you!
-          </p>
-        </section>
-
       </main>
 
       <Footer />
     </div>
+    </>
   );
 }

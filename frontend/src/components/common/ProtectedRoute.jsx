@@ -1,34 +1,30 @@
-import { Navigate, Outlet } from "react-router-dom";
-import { useEffect } from "react";
+// src/components/ProtectedRoute.jsx
+import { Navigate } from "react-router-dom";
 import { useData } from "../../context/DataContext";
+import { useEffect } from "react";
 
-const ProtectedRoute = ({ role }) => {
-  const { user, status} = useData();
-
-  console.log("user and status inside protected route", user, status)
-
-  // ⏳ Wait until auth check is DONE
-  if (status === "loading") {
-    return (
-      <div className="flex items-center justify-center h-screen text-gray-600">
-        Checking access...
-      </div>
-    );
-  }
-
-  // ❌ Not logged in
-  if (status === "guest") {
-    return <Navigate to="/" replace />;
-  }
-
-  // ❌ Logged in but wrong role
-  if (role && user?.role !== role) {
-    return <Navigate to="/" replace />;
-  }
+const ProtectedRoute = ({ children, role }) => {
+  const { user, status, checkAuth } = useData();
+   useEffect(() => {
+    if(!user){
+      checkAuth();
+    }
   
+  }, []);
 
-  // ✅ Authorized
-  return <Outlet />;
+  console.log("user in protected route and state", user, status)
+
+  if (status) return <div>Checking access...</div>;
+
+  if (!user) return <Navigate to="/" replace />;
+
+  if (role && user.role !== role) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
 };
+
+
 
 export default ProtectedRoute;

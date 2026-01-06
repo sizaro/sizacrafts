@@ -43,7 +43,7 @@ export default function Navbar() {
       const res = await loginUser({ email, password });
       await checkAuth();
       setLoginOpen(false);
-      if (res.role === "owner") navigate("/owner");
+      if (res.role === "admin") navigate("/admin");
       else if (res.role === "customer") navigate("/customer");
       else navigate("/");
     } catch (err) {
@@ -132,7 +132,7 @@ export default function Navbar() {
             </button>
 
             {accountOptions && (
-              <div className="absolute left-0 w-40 bg-white shadow rounded">
+              <div className="absolute left-2 w-26 bg-white shadow rounded">
                 <button
                   className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                   onClick={() => setLoginOpen(true)}

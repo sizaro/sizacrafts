@@ -2,35 +2,36 @@ import React from "react";
 import Navbar from "../../components/common/Navbar";
 import Footer from "../../components/common/Footer";
 import { motion } from "framer-motion";
+import MetaTags from "../../components/common/MetaTags"
 
 // ================= MOCK DATA =================
 const users = [
   {
     id: 1,
-    first_name: "EVA",
+    first_name: "Eva",
     last_name: "",
     role: "Founder & CEO",
     title: "Founder & CEO",
     bio: "Eva is passionate about promoting African handcrafted beadwork worldwide. Dedicated to quality and authenticity.",
-    image_url: "/images/owner.jpg",
+    image_url: "/images/eva.jpeg",
   },
   {
     id: 2,
     first_name: "Ruth",
-    last_name: "Kantono",
+    last_name: "K",
     role: "Manager",
     title: "Operations Manager",
     bio: "Ruth ensures smooth daily operations and supports our artisans to achieve excellence in every product.",
-    image_url: "/images/manager.jpg",
+    image_url: "/images/ruth.jpeg",
   },
   {
-    id: 2,
+    id: 3,
     first_name: "Ruth",
-    last_name: "Esaete",
-    role: "Manager",
+    last_name: "E",
+    role: "Asst Manager",
     title: "Professional designer",
     bio: "Ruth ensures our artisan's designs achieve excellence in every product.",
-    image_url: "/images/manager.jpg",
+    image_url: "/images/esaete.jpeg",
   },
 ];
 
@@ -41,16 +42,24 @@ const getImage = (user, fallback) => user.image_url || fallback;
 export default function About() {
   const owner = users.find((u) => u.role.includes("Founder")) || {};
   const manager = users.find((u) => u.role === "Manager") || {};
+  const asstManager = users.find((u)=>u.role === "Asst Manager") || {};
   const employees = users.filter(
-    (u) => u.role !== "Founder & CEO" && u.role !== "Manager"
+    (u) => u.role !== "Founder & CEO" && u.role !== "Manager" && u.role !== "Asst Manager"
   );
 
   return (
+    <>
+    <MetaTags
+        title="About"
+        description="Crafted in Africa with passion. Handmade bead jewelry and décor."
+        url="https://sizacrafts.com"
+      />
+      
     <div className="bg-gray-50 min-h-screen flex flex-col">
       <Navbar />
 
       {/* Hero Section */}
-      <header className="bg-gradient-to-r from-indigo-600 to-indigo-400 text-white py-20 text-center">
+      <header className="bg-gradient-to-r from-gray-300 to-amber-300 text-black py-20 text-center">
         <h1 className="md:text-5xl text-2xl font-bold mb-4">About SizaCrafts</h1>
         <p className="max-w-2xl mx-auto text-lg">
           Where passion meets creativity — founded and led by{" "}
@@ -62,15 +71,15 @@ export default function About() {
       <main className="flex-1 px-6 py-16 max-w-6xl mx-auto space-y-16">
         {/* Owner Section */}
         <section className="grid md:grid-cols-2 gap-8 items-center">
-          <div className="m-5">
+          <div className=" w-full flex flex-col justify-center items-center">
             <img
               src={getImage(owner, "/images/default_owner.webp")}
               alt={fullName(owner)}
-              className="rounded-xl shadow-lg"
+              className="rounded-xl shadow-lg h-[380px]"
             />
           </div>
           <div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">
+            <h2 className="text-3xl font-bold text-gray-800 mb-2 text-center">
               {fullName(owner)}
             </h2>
             <p className="text-indigo-600 font-medium mb-4">{owner.title}</p>
@@ -97,17 +106,40 @@ export default function About() {
         {manager.id && (
           <section className="grid md:grid-cols-2 gap-8 items-center">
             <div className="order-2 md:order-1">
-              <h2 className="text-3xl font-bold text-gray-800 mb-2">
+              <h2 className="text-3xl font-bold text-gray-800 mb-2 text-center">
                 {fullName(manager)}
               </h2>
-              <p className="text-indigo-600 font-medium mb-4">{manager.title}</p>
+              <p className="text-indigo-600 font-medium mb-4 ">{manager.title}</p>
               <p className="text-gray-700 leading-relaxed">{manager.bio}</p>
             </div>
-            <img
+            <div className="flex flex-col justify-center items-center order-1 md:order-2">
+              <img
               src={getImage(manager, "/images/default_manager.webp")}
               alt={fullName(manager)}
               className="rounded-2xl shadow-lg w-80 h-auto object-cover order-1 md:order-2"
             />
+            </div>
+            
+          </section>
+        )}
+
+         {/*Assistant Manager Section */}
+        {asstManager.id && (
+          <section className="flex flex-col w-full justify-center items-center">
+            <div className="order-1 md:order-2">
+              <img
+              src={getImage(asstManager, "/images/default_manager.webp")}
+              alt={fullName(asstManager)}
+              className="rounded-2xl shadow-lg w-80 h-auto object-cover flex flex-col w-full justify-center items-center"
+            />
+            </div>
+            <div className="order-2 md:order-1">
+              <h2 className="text-3xl font-bold text-gray-800 mb-2 text-center">
+                {fullName(asstManager)}
+              </h2>
+              <p className="text-indigo-600 font-medium mb-4">{asstManager.title}</p>
+              <p className="text-gray-700 leading-relaxed">{asstManager.bio}</p>
+            </div>
           </section>
         )}
 
@@ -143,7 +175,7 @@ export default function About() {
                   <motion.img
                     src={getImage(emp, "/images/default_employee.webp")}
                     alt={fullName(emp)}
-                    className="w-full h-auto md:h-[400px] object-cover rounded-t-xl"
+                    className="w-full h-auto md:h-[200px] object-cover rounded-t-xl"
                   />
                   <motion.div className="p-4 text-center">
                     <h3 className="text-lg font-semibold text-gray-800">{fullName(emp)}</h3>
@@ -158,5 +190,7 @@ export default function About() {
 
       <Footer />
     </div>
+    
+    </>
   );
 }

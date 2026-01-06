@@ -163,7 +163,7 @@ export default function AdminSidebar() {
               </Link>
             </li>
 
-            <li>
+            {/* <li>
               <Link
                 to="/admin/orders"
                 onClick={() => setMenuOpen(false)}
@@ -191,7 +191,7 @@ export default function AdminSidebar() {
               >
                 Reports
               </Link>
-            </li>
+            </li> */}
 
             <li className="mt-10">
               <SidebarFooter />
