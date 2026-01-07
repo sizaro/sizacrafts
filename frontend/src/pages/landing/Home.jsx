@@ -50,7 +50,10 @@ export default function Home() {
   <img
     src="/images/crafts_hero.jpg"
     alt="SizaCrafts Handmade Beads"
-    className="w-full h-full object-cover object-bottom"
+    className="absolute inset-0
+      w-full h-full
+      object-cover
+      object-bottom"
   />
 
   {/* DESKTOP OVERLAY TEXT */}
@@ -136,6 +139,9 @@ export default function Home() {
 
       {/* ================= WHY CHOOSE US ================= */}
 <section className="py-16 bg-gray-50">
+  <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+        Why Choose SizaCrafts?
+      </h2>
   <div className="max-w-7xl mx-auto px-6 flex flex-wrap items-center gap-10">
 
     {/* IMAGE SIDE */}
@@ -149,9 +155,6 @@ export default function Home() {
 
     {/* TEXT SIDE */}
     <div className="w-full md:w-[50%]">
-      <h2 className="text-3xl font-bold text-gray-800 mb-6">
-        Why Choose SizaCrafts?
-      </h2>
 
       <p className="text-gray-600 mb-6">
         We don’t just sell bead products — we tell stories through craftsmanship.

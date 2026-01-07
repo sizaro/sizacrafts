@@ -11,7 +11,7 @@ export default function ProductsPage() {
   const staticBaseUrl =
     import.meta.env.MODE === "development"
       ? "http://localhost:5500"
-      : "https://salonmanagementsystemv2.onrender.com";
+      : "https://sizacrafts.onrender.com";
 
   useEffect(() => {
     fetchCategories();

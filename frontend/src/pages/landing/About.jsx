@@ -12,7 +12,7 @@ const users = [
     last_name: "",
     role: "Founder & CEO",
     title: "Founder & CEO",
-    bio: "Eva is passionate about promoting African handcrafted beadwork worldwide. Dedicated to quality and authenticity.",
+    bio: " Eva is the Founder and CEO of SizaCrafts, driven by a vision to showcase African handcrafted beadwork on a global stage. As a committed student of Brigham Young University (BYU), Eva brings strong values of integrity, discipline, and service into the leadership of the company. She oversees the strategic direction of SizaCrafts, ensuring that every product reflects authenticity, quality, and cultural heritage. Eva is passionate about empowering artisans, preserving traditional craftsmanship, and building a sustainable business that positively impacts communities.",
     image_url: "/images/eva.jpeg",
   },
   {
@@ -21,7 +21,7 @@ const users = [
     last_name: "K",
     role: "Manager",
     title: "Operations Manager",
-    bio: "Ruth ensures smooth daily operations and supports our artisans to achieve excellence in every product.",
+    bio: "Ruth K serves as the Operations Manager at SizaCrafts, where she plays a vital role in coordinating daily operations and maintaining high production standards. As a dedicated BYU student, she combines academic excellence with practical leadership skills to ensure efficiency across the organization. Her responsibilities include managing workflows, supporting artisans, overseeing quality control, and ensuring timely delivery of products. Ruth’s commitment to organization, accountability, and teamwork helps keep SizaCrafts running smoothly while upholding its core values.",
     image_url: "/images/ruth.jpeg",
   },
   {
@@ -30,7 +30,7 @@ const users = [
     last_name: "E",
     role: "Asst Manager",
     title: "Professional designer",
-    bio: "Ruth ensures our artisan's designs achieve excellence in every product.",
+    bio: "Ruth E is the Assistant Manager and Lead Designer at SizaCrafts, bringing creativity, precision, and innovation to every collection. As a focused and driven BYU student, she applies professional design principles alongside traditional beadwork techniques to produce refined and contemporary pieces. She works closely with artisans to guide design execution, improve product aesthetics, and maintain consistency across collections. Ruth’s dedication to excellence, attention to detail, and collaborative approach contribute significantly to the brand’s visual identity and product quality.",
     image_url: "/images/esaete.jpeg",
   },
 ];
@@ -59,7 +59,7 @@ export default function About() {
       <Navbar />
 
       {/* Hero Section */}
-      <header className="bg-gradient-to-r from-gray-300 to-amber-300 text-black py-20 text-center">
+      <header className="bg-gradient-to-r from-gray-600 to-amber-900 text-white py-20 text-center">
         <h1 className="md:text-5xl text-2xl font-bold mb-4">About SizaCrafts</h1>
         <p className="max-w-2xl mx-auto text-lg">
           Where passion meets creativity — founded and led by{" "}
@@ -79,7 +79,7 @@ export default function About() {
             />
           </div>
           <div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-2 text-center">
+            <h2 className="text-3xl font-bold text-gray-800 mb-2 text-center md:text-left">
               {fullName(owner)}
             </h2>
             <p className="text-indigo-600 font-medium mb-4">{owner.title}</p>
@@ -104,13 +104,13 @@ export default function About() {
 
         {/* Manager Section */}
         {manager.id && (
-          <section className="grid md:grid-cols-2 gap-8 items-center">
+          <section className="grid md:grid-cols-2 gap-4 items-center">
             <div className="order-2 md:order-1">
-              <h2 className="text-3xl font-bold text-gray-800 mb-2 text-center">
+              <h2 className="text-3xl font-bold text-gray-800 mb-2 text-center md:text-left">
                 {fullName(manager)}
               </h2>
-              <p className="text-indigo-600 font-medium mb-4 ">{manager.title}</p>
-              <p className="text-gray-700 leading-relaxed">{manager.bio}</p>
+              <p className="text-indigo-600 font-medium mb-4 md:text-left ">{manager.title}</p>
+              <p className="text-gray-700 leading-relaxed md:text-left">{manager.bio}</p>
             </div>
             <div className="flex flex-col justify-center items-center order-1 md:order-2">
               <img
@@ -125,20 +125,20 @@ export default function About() {
 
          {/*Assistant Manager Section */}
         {asstManager.id && (
-          <section className="flex flex-col w-full justify-center items-center">
-            <div className="order-1 md:order-2">
+          <section className="flex flex-col w-full justify-center gap-8 items-center md:flex-row">
+            <div className="order-1 md:w-[300px] h-[320px] w-full h-[400px]">
               <img
               src={getImage(asstManager, "/images/default_manager.webp")}
               alt={fullName(asstManager)}
-              className="rounded-2xl shadow-lg w-80 h-auto object-cover flex flex-col w-full justify-center items-center"
+              className="rounded-2xl shadow-lg w-full md::h-[320px] h-[400px] object-cover object-center flex flex-col w-full justify-center items-center"
             />
             </div>
-            <div className="order-2 md:order-1">
-              <h2 className="text-3xl font-bold text-gray-800 mb-2 text-center">
+            <div className="order-2 md:w-[600px] h-[320px] flex flex-col justify-center">
+              <h2 className="text-3xl font-bold text-gray-800 mb-2 text-center md:text-left">
                 {fullName(asstManager)}
               </h2>
-              <p className="text-indigo-600 font-medium mb-4">{asstManager.title}</p>
-              <p className="text-gray-700 leading-relaxed">{asstManager.bio}</p>
+              <p className="text-indigo-600 font-medium mb-4 md:text-left">{asstManager.title}</p>
+              <p className="text-gray-700 leading-relaxed md:text-left">{asstManager.bio}</p>
             </div>
           </section>
         )}
